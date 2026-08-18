@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>FulfillmentInventoryPlatform.Presentation</RootNamespace>
+    <UserSecretsId>fulfillment-inventory-platform-secrets</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\\Application\\FulfillmentInventoryPlatform.Application.csproj" />
+    <ProjectReference Include="..\\Infrastructure\\FulfillmentInventoryPlatform.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
