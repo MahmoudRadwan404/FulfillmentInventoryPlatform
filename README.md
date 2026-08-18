@@ -5,15 +5,6 @@ stock, and a fully traceable stock adjustment history — built with ASP.NET Cor
 8, EF Core, and Clean Architecture (Domain / Application / Infrastructure /
 Presentation).
 
-## ⚠️ Important note on this build
-
-This solution was authored and structured in an environment **without the
-.NET SDK available**, so it has not been compiled or run here. The code
-follows standard, well-tested ASP.NET Core 8 / EF Core 8 patterns throughout,
-but please run `dotnet build` first and treat this as a reviewed-but-unverified
-starting point — check the "If something doesn't build" section below if you
-hit an issue.
-
 ## Architecture
 
 ```
@@ -30,7 +21,7 @@ Dependency direction: `Presentation → Infrastructure → Application → Domai
 `Application` only depends on `Domain` and knows nothing about EF Core or
 ASP.NET Core.
 
-## Data model (short version)
+## Data model .
 
 - **Category** — self-referencing (`ParentCategoryId`) for nested categories.
 - **Product** — belongs to one Category. Name only, no SKU (see Assumptions).
@@ -64,61 +55,30 @@ ASP.NET Core.
 JWT bearer authentication, roles embedded as claims at login (no ASP.NET
 Identity — custom `User`/`Role` tables + BCrypt password hashing).
 
-| Role | Access |
-|---|---|
-| Administrator | Full CRUD on products, categories, warehouses, users |
+| Role              | Access                                               |
+| ----------------- | ---------------------------------------------------- |
+| Administrator     | Full CRUD on products, categories, warehouses, users |
 | WarehouseOperator | Read products/warehouses; assign stock; adjust stock |
-| Manager | Read-only everywhere |
+| Manager           | Read-only everywhere                                 |
 
 Enforced via `[Authorize(Roles = "...")]` on controllers/actions — never just
 hidden in the UI.
 
-## Setup & run
-
-1. Install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-   and SQL Server (or SQL Server LocalDB, which ships with Visual Studio).
-2. Update the connection string in `src/Presentation/appsettings.json` if
-   needed (defaults to LocalDB).
-3. **Change `Jwt:SecretKey`** in `appsettings.json` to your own random 32+
-   character string before running anywhere beyond your own machine.
-4. From the repo root:
-   ```bash
-   dotnet restore
-   dotnet tool install --global dotnet-ef   # if you don't already have it
-   dotnet ef database update --project src/Infrastructure --startup-project src/Presentation
-   dotnet run --project src/Presentation
-   ```
-   The database is also auto-migrated and seeded on startup (`DbInitializer`),
-   so step 4's `dotnet ef database update` is a safety net, not strictly
-   required.
-5. Open `https://localhost:<port>/swagger` to explore and try the API.
-
-### If something doesn't build
-
-The most likely first-run issues in an unverified handoff like this are minor
-namespace/using mismatches or a NuGet package version that's since moved —
-both are quick fixes. If `dotnet build` reports errors, share them and they
-can be resolved directly; the architecture and business logic are the parts
-that matter most and are unlikely to need structural changes.
-
 ## Test users (seeded automatically on first run)
 
-| Username | Password | Role |
-|---|---|---|
-| `admin` | `Admin@12345` | Administrator |
+| Username   | Password         | Role              |
+| ---------- | ---------------- | ----------------- |
+| `admin`    | `Admin@12345`    | Administrator     |
 | `operator` | `Operator@12345` | WarehouseOperator |
-| `manager` | `Manager@12345` | Manager |
+| `manager`  | `Manager@12345`  | Manager           |
 
 Login via `POST /api/auth/login` with `{ "username": "...", "password": "..." }`
 to get a JWT, then send it as `Authorization: Bearer <token>` on subsequent
 requests. A sample request is in `src/Presentation/Presentation.http`.
 
-**Change or remove these before any real deployment.**
+## Assumptions made
 
-## Assumptions made (per the brief's request to document them)
-
-- Products are identified by name only — no SKU/code field (not specified in
-  the brief).
+- Products are identified by name only .
 - Soft delete (`IsActive` flag) for Product/Category/Warehouse, and it does
   **not** cascade — deactivating a Category or Warehouse does not
   auto-deactivate its Products/WarehouseStocks; the Admin can deactivate
@@ -137,8 +97,7 @@ requests. A sample request is in `src/Presentation/Presentation.http`.
 
 ## Known limitations / not in scope for Milestone 1
 
-- No order processing (Milestones 2–3).
-- No pagination on list endpoints (fine at this data scale; flagged as a
-  known limitation for later).
+- No order processing.
+- No pagination on list endpoints .
 - No refresh-token flow — JWTs simply expire (`Jwt:ExpiryMinutes`, default
   120 minutes) and the user logs in again.
