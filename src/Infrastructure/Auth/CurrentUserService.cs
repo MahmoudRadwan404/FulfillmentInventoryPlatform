@@ -15,13 +15,13 @@ namespace FulfillmentInventoryPlatform.Infrastructure.Auth
         {
             get
             {
-                var value = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var value = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
                 return int.TryParse(value, out var id) ? id : 0;
             }
         }
 
-        public string? Username => User?.FindFirstValue(ClaimTypes.Name);
+        public string? Username => User?.FindFirst(ClaimTypes.Name).Value;
 
-        public string? Role => User?.FindFirstValue(ClaimTypes.Role);
+        public string? Role => User?.FindFirst(ClaimTypes.Role).Value;
     }
 }

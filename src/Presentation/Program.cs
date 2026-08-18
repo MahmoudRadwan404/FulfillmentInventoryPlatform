@@ -20,6 +20,7 @@ builder.Services.AddControllers();
 
 // ---- Swagger (with JWT bearer support) ----
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Fulfillment & Inventory Platform API", Version = "v1" });

@@ -17,7 +17,6 @@ namespace FulfillmentInventoryPlatform.Infrastructure
 
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
-            services.AddHttpContextAccessor();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
