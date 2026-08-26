@@ -1,0 +1,14 @@
+@baseUrl = https://localhost:7001
+
+### Login as admin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin@12345"
+}
+
+### Get categories (replace {{token}} after login)
+GET {{baseUrl}}/api/categories
+Authorization: Bearer {{token}}
