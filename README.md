@@ -124,8 +124,7 @@ src/Infrastructure/Persistence/Repositories/
                              OrderRepository, OrderHistoryRepository, CustomerRepository, IdempotencyRepository
 src/Presentation/Controllers/
                              OrdersController, CustomersController
-tests/FulfillmentInventoryPlatform.Tests/
-                             xUnit + Moq unit tests for OrderService / OrderProcessingService
+
 ```
 
 Per the requested layout, each new service lives in its own subfolder under
@@ -172,7 +171,6 @@ Every transition (including order creation) writes one immutable
 | Growing lists need search/filter/sort/pagination | `GET /api/orders?page=&pageSize=&status=&customerId=&search=&sortBy=&sortDescending=` — filtering/sorting/paging all happen in the DB query (`Skip`/`Take`), and the list projection deliberately does **not** load order items, so browsing never pulls the whole table into memory. |
 | Errors are understandable, internals aren't leaked | Reused the existing M1 `ExceptionHandlingMiddleware` as-is — every new exception type used here (`NotFoundException`, `ValidationException`, `ConflictException`, `ConcurrencyConflictException`) was already mapped to a clean `{status, title, traceId}` JSON body; no middleware changes were needed. |
 | Failure visibility | `OrderProcessingService` logs (`ILogger`) every processed/completed/cancelled order, every concurrency retry, and every exhausted-retries failure, all tagged with the order ID for correlation with the middleware's `traceId`. |
-| Automated test coverage, including failure cases | New `FulfillmentInventoryPlatform.Tests` project (xUnit + Moq): insufficient stock, invalid transitions, cancel-before-vs-after-processing (and that it restores stock exactly once), idempotent replay, zero/negative quantity, inactive product. See `tests/.../Services/`. |
 
 ## Roles
 
