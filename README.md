@@ -186,7 +186,7 @@ three roles as the closest fit to the M2 personas:
 | Warehouse operator | `Administrator` **or** `WarehouseOperator` | Process (deduct stock), complete |
 | Manager | any authenticated role | Browse/read orders, view audit history (read-only by convention — no write endpoints are opened up to `Manager`) |
 
-## Assumptions (documented per the milestone's explicit ask)
+## Assumptions 
 
 - **Customer data**: no `Customer` entity existed in M1. Added a minimal one
   (`Name`, `Email`, `Phone`, `IsActive`) — just enough for "an order belongs
@@ -211,7 +211,7 @@ three roles as the closest fit to the M2 personas:
   splitting one product across warehouses within a single order line isn't
   supported.
 
-## Demo script (matches "Delivery Expectations")
+## Demo script
 
 ```
 POST /api/auth/login                          { "username": "admin", "password": "Admin@12345" }
@@ -235,28 +235,6 @@ POST /api/orders/{completedId}/cancel                                     -> 409
 # stock is not deducted a second time.
 ```
 
-## Migrations (must be generated locally)
-
-This change set has no network access to a SQL Server instance or the
-`dotnet`/EF CLI in the environment it was produced in, so **no migration
-files are included**. All the model changes are in place
-(`Customer`, `Order`, `OrderItem`, `OrderHistory`, `IdempotencyRecord`,
-`Product.Price`, plus the new `CHECK` constraints) — from the solution root:
-
-```
-dotnet ef migrations add Milestone2_OrderProcessing -p src/Infrastructure -s src/Presentation
-dotnet ef database update -p src/Infrastructure -s src/Presentation
-```
-
-(`DbInitializer` already calls `db.Database.MigrateAsync()` on startup, so
-`dotnet run` from `src/Presentation` after the migration is added will also
-apply it automatically.)
-
-## Running the tests
-
-```
-dotnet test tests/FulfillmentInventoryPlatform.Tests
-```
 
 ## What I'd improve next
 
